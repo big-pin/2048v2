@@ -3,7 +3,7 @@ package Bundle;
 import java.awt.Color;
 import java.util.ArrayList;
 
-public class Tile
+public class Tile implements Comparable<Tile>
 {
     private static ArrayList<Color> tileColors;
     Color color;
@@ -87,4 +87,22 @@ public class Tile
     {
         System.out.println("LOG: "+msg);
     }
+
+    @Override
+    public int compareTo(Tile t) 
+    {
+        if(getTileValue()>t.getTileValue())
+        {
+            return 1;
+        }
+        else if(getTileValue()==t.getTileValue())
+        {
+            return 0;
+        }
+        else
+        {
+            return -1;
+        }
+    }
+    
 }

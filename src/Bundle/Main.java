@@ -1,32 +1,55 @@
 package Bundle;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class Main 
 {
-    
-    /** 
-     * grid=187, 173, 160
-     * blank tile= 204,192,179
-        2 tile= 238,228,218
-        4 tile= 237,224,200
-        8 tile= 242,177,121]
-        16 tile= 245,149,99
-        32 tile= 246,124,95
-        64 tile= 246,94,59
-        128 tile= 237,207,114
-        256 tile= 237,204,97
-        512 tile= 237,200,80
-    **/
-    
-    public static void main(String[] args) throws InterruptedException 
+    public static void main(String[] args)
     {
-        Thread.sleep(2500);
+        Process process = null;
+        String arch= System.getProperty("os.arch");
+        String progPath= System.getenv("ProgramFiles");
+        String chromePath="Google\\Chrome\\Application\\chrome.exe";
+        String path=progPath+"\\"+chromePath;
+        String res=getScreenResolution(true);
+        if(arch.equals("amd64"))
+        {
+            path=progPath+" (x86)\\"+chromePath;
+        }
+        try {
+            process = new ProcessBuilder(path,"--window-size="+res,"--new-window","--window-position=0,0","http://gabrielecirulli.github.io/2048/").start();
+        } catch (IOException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         Grid grid=new Grid(getScreenResolution());
+        log("Created grid.");
+        grid.showGrid();
+        grid.makeMove();
+        grid.sortTiles();
+        try {
+            Runtime.getRuntime().exec("taskkill /im chrome.exe");
+        } catch (IOException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
-    static java.awt.Dimension getScreenResolution()
+    static Dimension getScreenResolution()
     {
-        return new java.awt.Dimension(java.awt.Toolkit.getDefaultToolkit().getScreenSize());
+        return new Dimension(Toolkit.getDefaultToolkit().getScreenSize());
     }
     
+    static String getScreenResolution(boolean str)
+    {
+        return getScreenResolution().width+","+getScreenResolution().height;
+    }
+    static void log(String msg)
+    {
+        System.out.println("LOG: "+msg);
+    }
     
 }
